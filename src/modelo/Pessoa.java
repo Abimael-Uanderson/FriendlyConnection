@@ -7,7 +7,7 @@ package modelo;
 
 public class Pessoa {
     private int id;
-    private int telefone;
+    private String telefone;
     private String nome;
     
      public String getNome() {
@@ -25,11 +25,11 @@ public class Pessoa {
     public void setId(int id) {
         this.id = id;
     }
-    public int getTelefone() {
+    public String getTelefone() {
         return telefone;
     }
 
-    public void setTelefone(int telefone) {
+    public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
 }

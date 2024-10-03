@@ -69,7 +69,7 @@ public class PessoaDAOJDBC implements PessoaDAO{
                 Pessoa pessoa = new Pessoa();
                 pessoa.setId(rset.getInt("pessoa_id"));
                 pessoa.setNome(rset.getString("nome"));
-                pessoa.setTelefone(rset.getInt("telefone"));
+                pessoa.setTelefone(rset.getString("telefone"));
                 pessoas.add(pessoa);
             }
         } catch (Exception e) {
@@ -77,7 +77,7 @@ public class PessoaDAOJDBC implements PessoaDAO{
         } 
         return pessoas;
     }
-
+    
     @Override
     public Pessoa listar(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

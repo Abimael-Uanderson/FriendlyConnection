@@ -9,12 +9,19 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
+import modelo.Pessoa;
+import dao.DAOFactory;
+import dao.PessoaDAO;
+import dao.PessoaDAOJDBC;
 /**
  *
  * @author Positivo
  */
 public class telaCadastro extends javax.swing.JFrame {
-
+    Pessoa pessoa;
+    PessoaDAO pessoaDAO = DAOFactory.criarPessoaDAO();
+    
     /**
      * Creates new form telaCadastro
      */
@@ -43,9 +50,9 @@ public class telaCadastro extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtNome = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jFormattedTextField1 = new javax.swing.JFormattedTextField();
+        txtTelefone = new javax.swing.JFormattedTextField();
         btnCadastrarPessoa = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -62,7 +69,7 @@ public class telaCadastro extends javax.swing.JFrame {
         jLabel2.setText("Telefone:");
 
         try {
-            jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("###########")));
+            txtTelefone.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("###########")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
@@ -93,7 +100,7 @@ public class telaCadastro extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(26, 26, 26)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -104,7 +111,7 @@ public class telaCadastro extends javax.swing.JFrame {
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                     .addGap(3, 3, 3)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(74, 74, 74)
@@ -119,11 +126,11 @@ public class telaCadastro extends javax.swing.JFrame {
                 .addGap(26, 26, 26)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
-                .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(98, 98, 98)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCadastrarPessoa)
@@ -163,14 +170,49 @@ public class telaCadastro extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-   
+    private void inserir() {
+        Pessoa pessoaInserida = new Pessoa();
+        // Verifica se o nome tem pelo menos 3 letras
+    String nome = txtNome.getText().trim(); // .trim() remove espaços em branco no início e no fim
+    if (nome.length() < 3) {
+        JOptionPane.showMessageDialog(this, "Erro: O nome deve conter pelo menos 3 letras.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
+        return; // Para a execução se a condição for violada
+    }
+    pessoaInserida.setNome(nome);
+
+    // Verifica se o telefone contém apenas números e não está vazio
+    String telefone = txtTelefone.getText().trim();
+    if (telefone.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Erro: O campo de telefone está vazio.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
+        return; // Para a execução se a condição for violada
+    }
+
+    // Verifica se o telefone contém apenas dígitos
+    if (!telefone.matches("\\d+")) {
+        JOptionPane.showMessageDialog(this, "Erro: O telefone deve conter apenas números.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
+        return; // Para a execução se a condição for violada
+    }
+    
+    
+    pessoaInserida.setTelefone(telefone);
+        
+        
+      
+        int linha = pessoaDAO.inserir(pessoaInserida);
+        if (linha > 0) {
+            JOptionPane.showMessageDialog(this, "Pessoa inserida com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao inserir Pessoa.");
+        }
+        
+    }
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
       this.dispose();
         new telaPrincipal1().setVisible(true);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnCadastrarPessoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarPessoaActionPerformed
-       
+        inserir();       
     }//GEN-LAST:event_btnCadastrarPessoaActionPerformed
 
     /**
@@ -212,12 +254,12 @@ public class telaCadastro extends javax.swing.JFrame {
     private javax.swing.JButton btnCadastrarPessoa;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JLabel img;
-    private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField txtNome;
+    private javax.swing.JFormattedTextField txtTelefone;
     // End of variables declaration//GEN-END:variables
 }
