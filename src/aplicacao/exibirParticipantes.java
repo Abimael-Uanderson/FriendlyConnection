@@ -4,18 +4,108 @@
  */
 package aplicacao;
 
+import modelo.Pessoa;
+import dao.DAOFactory;
+import dao.PessoaDAO;
+import dao.PessoaDAOJDBC;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
- * @author Positivo
+ * @author abima
  */
 public class exibirParticipantes extends javax.swing.JFrame {
+     PessoaDAO pessoaDAO = DAOFactory.criarPessoaDAO();
+     DefaultTableModel modeloPessoa = null;
 
     /**
      * Creates new form exibirParticipantes
      */
     public exibirParticipantes() {
         initComponents();
+        modeloPessoa = (DefaultTableModel) tblPessoa.getModel();
     }
+    
+    
+    
+    private void preencherTabelaPessoa() {
+    // Limpa os dados da tabela
+    modeloPessoa.setRowCount(0);  // Usar setRowCount é mais seguro do que getDataVector().clear()
+
+    try {
+        // Obtém a lista de pessoas
+        List<Pessoa> pessoas = pessoaDAO.listar();
+       
+
+        // Adiciona as pessoas na tabela
+        for (Pessoa pessoa : pessoas) {
+            modeloPessoa.addRow(new Object[]{
+                pessoa.getId(),
+                pessoa.getNome(),
+                pessoa.getTelefone()
+            });
+        }
+
+        // Notifica que os dados mudaram
+        modeloPessoa.fireTableDataChanged();
+
+    } catch (Exception e) {
+        e.printStackTrace();  // Ajuda a visualizar o erro
+        throw e;
+    }
+}
+    
+   
+     
+    
+    
+    private void apagarPessoa() {
+        try {
+            Integer id = (Integer) modeloPessoa.getValueAt(tblPessoa.getSelectedRow(), 0);
+
+            int linha = pessoaDAO.apagar(id);
+            if (linha > 0) {
+                modeloPessoa.removeRow(tblPessoa.getSelectedRow());
+                JOptionPane.showMessageDialog(this, "Pessoa excluida com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao excluir pessoa.");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecionar uma pessoa");
+        }
+    }
+    
+    
+
+    
+    
+    private void editarPessoa() {
+        try {
+            Integer id = (Integer) modeloPessoa.getValueAt(tblPessoa.getSelectedRow(), 0);
+            String nome = (String) modeloPessoa.getValueAt(tblPessoa.getSelectedRow(), 1);
+            String telefone = (String) modeloPessoa.getValueAt(tblPessoa.getSelectedRow(), 1);
+            
+            
+
+            Pessoa pessoa = new Pessoa();
+            pessoa.setId(id);
+            pessoa.setNome(nome);
+            pessoa.setTelefone(telefone);
+            
+            
+            
+            //new frmLutador(lutador).setVisible(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Por favor, selecionar uma pessoa da tabela");
+        }
+    }
+
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -26,89 +116,107 @@ public class exibirParticipantes extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bntEditar = new javax.swing.JButton();
+        btnApagar = new javax.swing.JButton();
+        bntCancelar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        tblPessoa = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        bntEditar.setText("Editar");
+        bntEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntEditarActionPerformed(evt);
+            }
+        });
+
+        btnApagar.setText("Apagar");
+        btnApagar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnApagarActionPerformed(evt);
+            }
+        });
+
+        bntCancelar.setText("Cancelar");
+        bntCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntCancelarActionPerformed(evt);
+            }
+        });
+
+        tblPessoa.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "ID", "Nome", "Telefone", "Evento"
+                "id", "nome", "telefone"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-        }
-
-        jButton1.setText("Excluir");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        tblPessoa.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tblPessoaFocusGained(evt);
             }
         });
-
-        jButton2.setText("Editar");
-
-        jButton3.setText("Cancelar");
+        jScrollPane1.setViewportView(tblPessoa);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(29, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29))))
+                .addGap(146, 146, 146)
+                .addComponent(bntEditar)
+                .addGap(18, 18, 18)
+                .addComponent(btnApagar)
+                .addGap(26, 26, 26)
+                .addComponent(bntCancelar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3))
-                .addGap(18, 18, 18))
+                    .addComponent(bntEditar)
+                    .addComponent(btnApagar)
+                    .addComponent(bntCancelar))
+                .addGap(14, 14, 14))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void tblPessoaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tblPessoaFocusGained
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        preencherTabelaPessoa();
+    }//GEN-LAST:event_tblPessoaFocusGained
+
+    private void bntCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntCancelarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        
+    }//GEN-LAST:event_bntCancelarActionPerformed
+
+    private void bntEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntEditarActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_bntEditarActionPerformed
+
+    private void btnApagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApagarActionPerformed
+        // TODO add your handling code here:
+        apagarPessoa();
+    }//GEN-LAST:event_btnApagarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -146,10 +254,10 @@ public class exibirParticipantes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton bntCancelar;
+    private javax.swing.JButton bntEditar;
+    private javax.swing.JButton btnApagar;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblPessoa;
     // End of variables declaration//GEN-END:variables
 }

@@ -56,6 +56,7 @@ public class telaCadastro extends javax.swing.JFrame {
         btnCadastrarPessoa = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        btnListar = new javax.swing.JButton();
         img = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -91,6 +92,13 @@ public class telaCadastro extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("MV Boli", 0, 24)); // NOI18N
         jLabel3.setText("Welcome back");
 
+        btnListar.setText("List Pessoas");
+        btnListar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -102,21 +110,21 @@ public class telaCadastro extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGap(13, 13, 13)
-                                    .addComponent(btnCadastrarPessoa)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnCancelar))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                    .addGap(3, 3, 3)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(3, 3, 3)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnCadastrarPessoa)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnCancelar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnListar))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(74, 74, 74)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addGap(49, 49, 49))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,7 +142,8 @@ public class telaCadastro extends javax.swing.JFrame {
                 .addGap(98, 98, 98)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCadastrarPessoa)
-                    .addComponent(btnCancelar))
+                    .addComponent(btnCancelar)
+                    .addComponent(btnListar))
                 .addGap(42, 42, 42))
         );
 
@@ -172,31 +181,24 @@ public class telaCadastro extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     private void inserir() {
         Pessoa pessoaInserida = new Pessoa();
-        // Verifica se o nome tem pelo menos 3 letras
-    String nome = txtNome.getText().trim(); // .trim() remove espaços em branco no início e no fim
+       
+    String nome = txtNome.getText().trim();
     if (nome.length() < 3) {
         JOptionPane.showMessageDialog(this, "Erro: O nome deve conter pelo menos 3 letras.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
-        return; // Para a execução se a condição for violada
+        return; 
     }
     pessoaInserida.setNome(nome);
 
-    // Verifica se o telefone contém apenas números e não está vazio
+    
     String telefone = txtTelefone.getText().trim();
     if (telefone.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Erro: O campo de telefone está vazio.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
-        return; // Para a execução se a condição for violada
+        return; 
     }
 
-    // Verifica se o telefone contém apenas dígitos
-    if (!telefone.matches("\\d+")) {
-        JOptionPane.showMessageDialog(this, "Erro: O telefone deve conter apenas números.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
-        return; // Para a execução se a condição for violada
-    }
-    
-    
     pessoaInserida.setTelefone(telefone);
         
-        
+
       
         int linha = pessoaDAO.inserir(pessoaInserida);
         if (linha > 0) {
@@ -214,6 +216,11 @@ public class telaCadastro extends javax.swing.JFrame {
     private void btnCadastrarPessoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarPessoaActionPerformed
         inserir();       
     }//GEN-LAST:event_btnCadastrarPessoaActionPerformed
+
+    private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
+        // TODO add your handling code here:
+        new exibirParticipantes().setVisible(true);
+    }//GEN-LAST:event_btnListarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -253,6 +260,7 @@ public class telaCadastro extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrarPessoa;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnListar;
     private javax.swing.JLabel img;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

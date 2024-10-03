@@ -302,7 +302,7 @@ public class telaEvento extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
-        new telaListarPessoa().setVisible(true);
+        new telaListarEvento().setVisible(true);
     }//GEN-LAST:event_btnListarActionPerformed
 
     /**
